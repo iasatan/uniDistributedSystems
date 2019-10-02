@@ -17,13 +17,13 @@ class AccountValidatorTest {
         user = new User("iasatan");
     }
 
-    @org.junit.jupiter.api.Test
+    @Test
     void isValid() throws IllegalCharacterException, NotLongEnoughException {
         validator.isValid(user);
     }
 
     @Test
-    void lenghtValidator() throws IllegalCharacterException, NotLongEnoughException {
+    void lengthValidator() {
         user = new User("asd");
         Assertions.assertThrows(NotLongEnoughException.class, () -> {
             validator.isValid(user);
@@ -31,7 +31,7 @@ class AccountValidatorTest {
     }
 
     @Test
-    void SpaceValidator() throws IllegalCharacterException, NotLongEnoughException {
+    void SpaceValidator() {
         user = new User("asd asd");
         Assertions.assertThrows(IllegalCharacterException.class, () -> {
             validator.isValid(user);

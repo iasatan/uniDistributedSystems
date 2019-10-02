@@ -1,16 +1,26 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
 <body>
-<form action="/book/addBook" method="post">
-    <input type="text" name="title" placeholder="title" value="asd">
-    <input type="number" name="isbn" placeholder="isbn" value="43">
-    <input type="text" name="author" placeholder="author" value="Adam">
-    <input type="submit" value="Küldés">
+<form action="/book/addBook" th:object="${book}" method="post">
+    Title:<input th:field="*{title}" th:class="${#fields.hasErrors('title')}" placeholder="title">
+    <ul>
+        <li th:each="err : ${#fields.errors('title')}" th:text="${err}"></li>
+    </ul>
+    ISBN:<input th:field="*{isbn}" placeholder="isbn">
+    <ul>
+        <li th:each="err : ${#fields.errors('isbn')}" th:text="${err}"></li>
+    </ul>
+    Author:<input th:field="*{author}" placeholder="author">
+    <ul>
+        <li th:each="err : ${#fields.errors('author')}" th:text="${err}"></li>
+    </ul>
+    <input type="submit" value="Send">
 </form>
+
 
 </body>
 </html>
