@@ -1,16 +1,23 @@
 package me.uni.msc.ds.facebookbot.controller;
 
+import me.uni.msc.ds.facebookbot.Result;
 import me.uni.msc.ds.facebookbot.common.Controller;
 import me.uni.msc.ds.facebookbot.common.EventType;
 import me.uni.msc.ds.facebookbot.common.JBot;
 import me.uni.msc.ds.facebookbot.facebook.Bot;
 import me.uni.msc.ds.facebookbot.facebook.FbService;
+import me.uni.msc.ds.facebookbot.facebook.RobotService;
 import me.uni.msc.ds.facebookbot.facebook.models.Event;
 import me.uni.msc.ds.facebookbot.facebook.models.Message;
 import me.uni.msc.ds.facebookbot.facebook.models.Payload;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 @JBot
 @Profile("facebook")
@@ -18,6 +25,8 @@ public class FbController extends Bot {
 
 
     private FbService fbService;
+
+    private RobotService robotService;
 
 
     @Value("${fbBotToken}")
@@ -27,8 +36,9 @@ public class FbController extends Bot {
     private String pageAccessToken;
 
     @Autowired
-    public FbController(FbService fbService) {
+    public FbController(FbService fbService, RobotService robotService) {
         this.fbService = fbService;
+        this.robotService = robotService;
     }
 
 
@@ -58,7 +68,18 @@ public class FbController extends Bot {
      */
     @Controller(events = {EventType.MESSAGE, EventType.POSTBACK})
     public void onGetStarted(Event event) {
-        reply(event, new Message().setText(fbService.response(event.getMessage().getText())));
+        Message message = new Message();
+        message.setText(robotService.response(event));
+        reply(event, new Message().setText(robotService.response(event)));
+    }
+
+    @GetMapping("hello")
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
+    public Result hello(@RequestParam String message) {
+        Result result = new Result();
+        result.setMessage("Hello " + message);
+        return result;
     }
 
 /**
